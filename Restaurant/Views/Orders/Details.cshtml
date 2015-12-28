@@ -1,0 +1,95 @@
+﻿@model Restaurant.Models.Order
+
+@{
+    ViewBag.Title = "Order Details";
+    ViewBag.totalPrice = 0.0;
+}
+
+<h2>Order Details</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status  )
+        </dt>
+       
+        <dd>
+            @Html.DisplayFor(model => model.Status.Name )
+        </dd>
+
+    </dl>
+
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Cont
+            </th>
+            <th>
+                price
+            </th>
+            <th>
+                Total Price
+            </th>
+            
+        </tr>
+        @{
+           
+            foreach (Restaurant.Models.OrderMenuItems orderMenuItem in Model.OrderMenuItems)
+            {
+
+                <tr>
+                    <td>
+                        @orderMenuItem.MenuItem.Name
+                    </td>
+                    <td>
+                        @orderMenuItem.Count
+                    </td>
+                    <td>
+                        @orderMenuItem.Price
+
+                    </td>
+                    <td>
+                        @((orderMenuItem.Count * orderMenuItem.Price).ToString())
+                        <span class="hidden ">
+                            @(ViewBag.totalPrice += orderMenuItem.Count * orderMenuItem.Price)
+                        </span>
+                    </td>
+                    
+                </tr>
+                    
+            }
+            <tr>
+                <td>
+                    
+                </td>
+                <td>
+                   
+                </td>
+                <td>
+                    Total Price
+                </td>
+                <td>
+                    @ViewBag.totalPrice
+                </td>
+            </tr>
+        }
+    </table>
+
+
+
+</div>
+<p>
+     
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Restaurant.Models.Order>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Scripts{
+
+
+    <script type="text/javascript">
+
+        function setOrderStatus(orderId, statusID) {
+            var url = '@Url.Action("OrderStatus", "Orders")';
+
+            $.post(url,
+                    {
+                        orderId: orderId,
+                        statusID: statusID
+                    },
+                    function (result) {
+                        if (result.toString().search('ERRMSG:') == 0) {
+                            alert(result.slice(7, result.length));
+                            //bootbox.alert('Action Not Allowed');
+                            console.log('Result is null');
+                            console.log(args);
+                            console.log(args.e);
+                        }
+                        else {
+                            console.log(result);
+                            location.reload();
+                        }
+                    }).fail(function (xhr, error, status) {
+                        alert(status);
+                        console.log(' fail: ' + status);
+                    });
+        }
+
+
+
+
+    </script>
+}
+
+
+<h2>Orders List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ID)
+        </th>
+        @if (!User.IsInRole("Clients"))
+        {
+            <td>
+                Client
+            </td>
+        }
+        <th>
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            @if (!User.IsInRole("Clients"))
+            {
+                <td>
+                    @if (item.Client.FullName !=null)
+                    { 
+                        @Html.DisplayFor(modelItem => item.Client.FullName)
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Client.UserName)
+                    }
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status.Name)
+            </td>
+            <td>
+
+                <!-- Split button -->
+                <div class="btn-group dropup btn-primary">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        إجراء <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href=@Url.Action("Details","Orders", new { id = item.ID })>Details</a></li>
+                        @if (!User.IsInRole("Clients"))
+                        {
+                            if (item.Status.ID == 0)
+                            {
+                                <li class="divider"></li>
+                                <li><a href="javascript:setOrderStatus('@item.ID', '1')">preparing</a></li>
+                            }
+                             if (item.Status.ID == 1)
+                            {
+                                <li class="divider"></li>
+                                <li><a href="javascript:setOrderStatus('@item.ID', '2')">delivering</a></li>
+                            }
+                            if (item.Status.ID == 2)
+                            {
+                                <li class="divider"></li>
+                                <li><a href="javascript:setOrderStatus('@item.ID', '3')">Delevered</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+
+
+
+                @*@Html.ActionLink("Edit", "Edit", new { id=item.ID }) |*@
+                @* @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id=item.ID })*@
+            </td>
+        </tr>
+    }
+
+</table>
