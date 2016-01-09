@@ -71,6 +71,9 @@ namespace Restaurant.Models
         [ForeignKey ("Client_Id")]
         public virtual ApplicationUser Client { get; set; }
 
+        // to establish the relation between the order and orderMenuItem
+        // this relation is one order to many orderMenuItem
+        // thats why we use collection of order meny item as type
         public virtual Collection<OrderMenuItems> OrderMenuItems { get; private set; }
 
         [Display(Name = "Status")]
@@ -83,15 +86,22 @@ namespace Restaurant.Models
         }
     }
 
+
+    //to establish the relation between the order and menuItem which is many to many
+    // we devided it to 2 relations (order to orderMenuItem ) and (MenuItem to orderMenuItem)
+    // this relation is one order to many orderMenuItem
+    // thats why we use collection of order meny item as type
     public class OrderMenuItems
     {
 
-        //public long Id { get; set; }
+       
+        //this is a forign key to relate to Order.Id
         [Required]
         [Key, Column(Order = 0)]
         public int Order_Id { get; set; }
 
-        [ForeignKey("Order_Id")]
+        // to establish a relation to the order table 
+        [ForeignKey("Order_Id")]// this line to let this relation uses the column OrderMenuItems.Order_Id as ForeignKey 
         public virtual Order Order { get; set; }
 
         [Required]
